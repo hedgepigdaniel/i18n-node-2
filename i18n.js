@@ -154,9 +154,9 @@ i18n.prototype = {
 		if (typeof countOrPlural === 'number') {
 			var path = pathOrSingular;
 			var count = countOrPlural;
-			msg = this.translate(this.locale, path);
+			msg = this.translate(this.locale, path, path);
 
-			msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, Array.prototype.slice.call(arguments, 1));
+			msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, Array.prototype.slice.call(arguments, 2));
 		} else {
 			var singular = pathOrSingular;
 			var plural = countOrPlural;
@@ -302,13 +302,18 @@ i18n.prototype = {
 			this.initLocale(locale, {});
 		}
 
-		if (!this.locales[locale][singular]) {
-			if (this.devMode) {
-				this.writeFile(locale);
-			}
+		var writeFile = false;
+		if (!this.locales[locale][singular] && this.devMode) {
+			writeFile = true;
 		}
 
-		return dotNotation(this.locales[locale], singular, plural ? { one: singular, other: plural } : undefined);
+		var msg = dotNotation(this.locales[locale], singular, plural ? { one: singular, other: plural } : undefined);
+
+		if (writeFile) {
+			this.writeFile(locale);
+		}
+
+		return msg;
 	},
 
 	// try reading a file
