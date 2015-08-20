@@ -160,14 +160,14 @@ i18n.prototype = {
 			var count = countOrPlural;
 			msg = this.translate(this.locale, path, path);
 
-			msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, Array.prototype.slice.call(arguments, 2));
+			msg = vsprintf(Number(count) !== 1 ? msg.other : msg.one, Array.prototype.slice.call(arguments, 2));
 		} else {
 			var singular = pathOrSingular;
 			var plural = countOrPlural;
 			var count = additionalOrCount;
 			msg = this.translate(this.locale, singular, plural);
 
-			msg = vsprintf(parseInt(count, 10) > 1 ? msg.other : msg.one, [count]);
+			msg = vsprintf(Number(count) !== 1 ? msg.other : msg.one, [count]);
 
 			if (arguments.length > 3) {
 				msg = vsprintf(msg, Array.prototype.slice.call(arguments, 3));
